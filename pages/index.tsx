@@ -1,15 +1,20 @@
 import * as React from 'react';
 import cheerio from 'cheerio';
 
-const MainPage = ({ news }: { news: string[] }) => {
-    const newsList = news.map((n, i) => {
-        return <div key={i + '__n'}>{n}</div>;
+const MainPage = ({ news }: { news: any[] }) => {
+    const newsList = news.map(({ title, link }, i) => {
+        return (
+            <div style={{margin: '5px 0'}}>
+                <a href={'https://www.cybersport.ru' + link} target="_blank" key={i + '__n'}>
+                    {title}
+                </a>
+            </div>
+        );
     });
     return (
-        <>
-            <div>Main page1 {news?.length}</div>
+        <div style={{margin: '10px 10%'}}>
             {newsList}
-        </>
+        </div>
     );
 };
 
@@ -23,9 +28,12 @@ export async function getStaticProps(context) {
             return r;
         })
         .then(($) => {
-            const news = $('.news-sidebar__link').map((index, element) =>
-                $(element).text()
-            );
+            const news = $('.news-sidebar__link').map((index, element) => {
+                return {
+                    title: $(element).text(),
+                    link: $(element).attr('href'),
+                };
+            });
 
             return news.toArray();
         });
