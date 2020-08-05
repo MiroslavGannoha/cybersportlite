@@ -1,64 +1,95 @@
 import * as React from 'react';
 import cheerio from 'cheerio';
 import styles from '../styles/index.module.css';
-
-const cybersport = 'https://www.cybersport.ru';
-const gameInside = 'https://gameinside.ua';
-const cyberSports = 'https://cyber.sports.ru';
-const championat = 'https://championat.com';
+import PortalsNavbar from '../components/PortalsNavbar';
+import { portalsDomains } from '../settings';
 
 const MainPage = ({ news }: { news: any[] }) => {
-    const newsList = news.map(({ title, link, commentsCount, isMain }, i) => {
-        const isHot = commentsCount > 24;
-        
-        return (
-            <div className={styles.title} key={i + '__n'} style={{fontWeight: isMain ? 'bolder' : 'normal', marginBottom: isMain ? 16 : 0}}>
-                <a href={cybersport + link} target="_blank">
-                    {title}
-                </a>
+    const featuredTitlesList = news
+        .filter(({ isFeatured }) => isFeatured)
+        .map(({ title, link, commentsCount }, i) => {
+            const isHot = commentsCount > 24;
 
-                <a
-                    href={cybersport + link + '#comments'}
-                    target="_blank"
-                    style={{ marginLeft: 15, textDecoration: 'none' }}
+            return (
+                <div
+                    className={styles.title}
+                    key={i + '__n__featured'}
+                    style={{
+                        fontWeight: 'bolder',
+                        fontSize: '1.15em',
+                    }}
                 >
-                    <img
-                        src={isHot ? '/fire.png' : '/comments.png'}
-                        width="15px"
-                        style={{ marginRight: 4, marginBottom: -2, filter: isHot ? 'none' : 'opacity(0.6)' }}
-                    />
-                    <span style={{color: isHot ? '#ff5722' : 'gray'}}>
-                        {commentsCount}
-                    </span>
-                </a>
-            </div>
-        );
-    });
+                    <a href={portalsDomains.cybersport + link} target="_blank">
+                        {title}
+                    </a>
+
+                    <a
+                        href={portalsDomains.cybersport + link + '#comments'}
+                        target="_blank"
+                        style={{ marginLeft: 15, textDecoration: 'none' }}
+                    >
+                        <img
+                            src={isHot ? '/fire.png' : '/comments.png'}
+                            width="15px"
+                            style={{
+                                marginRight: 4,
+                                marginBottom: -2,
+                                filter: isHot ? 'none' : 'opacity(0.6)',
+                            }}
+                        />
+                        <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
+                            {commentsCount}
+                        </span>
+                    </a>
+                </div>
+            );
+        });
+    const titlesList = news
+        .filter(({ isFeatured }) => !isFeatured)
+        .map(({ title, link, commentsCount, discipline }, i) => {
+            const isHot = commentsCount > 24;
+
+            return (
+                <div className={styles.title} key={i + '__n'}>
+                    <a href={portalsDomains.cybersport + link} target="_blank">
+                        <img
+                            src={'/' + discipline + '.png'}
+                            width="20px"
+                            style={{
+                                marginRight: 6,
+                                verticalAlign: 'bottom',
+                            }}
+                            alt={discipline}
+                        />
+                        {title}
+                    </a>
+
+                    <a
+                        href={portalsDomains.cybersport + link + '#comments'}
+                        target="_blank"
+                        style={{ marginLeft: 15, textDecoration: 'none' }}
+                    >
+                        <img
+                            src={isHot ? '/fire.png' : '/comments.png'}
+                            width="15px"
+                            style={{
+                                marginRight: 4,
+                                marginBottom: -2,
+                                filter: isHot ? 'none' : 'opacity(0.6)',
+                            }}
+                        />
+                        <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
+                            {commentsCount}
+                        </span>
+                    </a>
+                </div>
+            );
+        });
     return (
         <div className={styles.container}>
-            <ul className={styles.list}>
-                <li>
-                    <a href="/" >
-                        <img width="40px" alt="www.cybersport.ru" src={`${cybersport}/favicon.ico`} />
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <img width="40px"  alt="www.gameInside.ua" src={`${gameInside}/favicon.ico`} />
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <img width="40px" alt="www.cyber.sports.ru" src={`${cyberSports}/favicon.ico`} />
-                    </a>
-                </li>
-                <li>
-                    <a href="/">
-                        <img width="40px" alt="www.championat.ru/cybersport" src={`${championat}/favicon.ico`} />
-                    </a>
-                </li>
-            </ul>
-            <div>{newsList}</div>
+            <PortalsNavbar />
+            <div style={{ marginBottom: 26 }}>{featuredTitlesList}</div>
+            <div>{titlesList}</div>
         </div>
     );
 };
@@ -66,40 +97,64 @@ const MainPage = ({ news }: { news: any[] }) => {
 export async function getStaticProps(context) {
     console.time();
 
-    const news = await fetch(cybersport)
+    const news = await fetch(portalsDomains.cybersport)
         .then((res) => res.text())
         .then((data) => {
             const r = cheerio.load(data);
             return r;
         })
         .then(($) => {
-            const $mainArticle = $('.news--1');
-            const mainTitle = $mainArticle.find('.card-feature__title').children('a').text();
-            const mainLink = $mainArticle.find('.responsive-card-feature ').attr('href');
-            const mainCommentsId = $mainArticle.find('.comment-counter').data().objectId;
-            
             const titles = $('.news-sidebar__post').map((index, element) => {
                 const $link = $(element).find('.news-sidebar__link');
+                const discipline = $(element)
+                    .find('.news-sidebar__discipline')
+                    .find('g')
+                    .attr('class')
+                    .split('--')[1];
+
                 const commentsId = $(element).find('.comment-counter').data()
                     .objectId;
                 const title = $link.text();
+
                 return {
                     title: title,
                     link: $link.attr('href'),
                     commentsCount: 0,
                     commentsId,
-                    isMain: false,
+                    isFeatured: false,
+                    discipline,
                 };
             });
+            const featuredTitles = $('.card-feature.news').map(
+                (index, element) => {
+                    const link = $(element)
+                        .find('.responsive-card-feature ')
+                        .attr('href');
+                    const commentsId = $(element)
+                        .find('.comment-counter')
+                        .data().objectId;
 
-            const titlesArray: any[] = titles.toArray();
-            titlesArray.unshift({
-                title: mainTitle,
-                link:mainLink,
-                commentsCount: 0,
-                commentsId: mainCommentsId,
-                isMain: true,
-            })
+                    const title = $(element)
+                        .find('.card-feature__title')
+                        .children('a')
+                        .text();
+
+                    return {
+                        title: title,
+                        discipline: '',
+                        link,
+                        commentsCount: 0,
+                        commentsId,
+                        isFeatured: true,
+                    };
+                }
+            );
+
+            const titlesArray: any[] = [
+                ...featuredTitles.toArray(),
+                ...titles.toArray(),
+            ];
+
             return titlesArray;
         })
         .then((titles) => {
@@ -108,7 +163,7 @@ export async function getStaticProps(context) {
                 .join(',1|');
 
             return fetch(
-                `${cybersport}/internal-api/comments/count?data=1|${commentsQuery}`
+                `${portalsDomains.cybersport}/internal-api/comments/count?data=1|${commentsQuery}`
             )
                 .then((resp) => resp.json())
                 .then((data) => {
@@ -130,7 +185,7 @@ export async function getStaticProps(context) {
     console.timeEnd();
 
     return {
-        props: { news: news  }, // will be passed to the page component as props
+        props: { news: news }, // will be passed to the page component as props
     };
 }
 
