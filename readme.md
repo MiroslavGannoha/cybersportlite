@@ -1,0 +1,1 @@
+Cybersport news generator
