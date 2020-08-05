@@ -1,0 +1,26 @@
+.container {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    margin: 10px 10%;
+}
+
+.title {
+    margin: 10px 0;
+}
+
+.title a {
+    color: 	#4361ee;
+}
+
+.title a:visited {
+    color: gray;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.list > li{
+    display: inline-block;
+    margin-right: 30px;
+}
