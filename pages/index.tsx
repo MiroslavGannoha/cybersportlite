@@ -3,6 +3,7 @@ import cheerio from 'cheerio';
 import styles from '../styles/index.module.css';
 import PortalsNavbar from '../components/PortalsNavbar';
 import { portalsDomains } from '../settings';
+import Head from 'next/head';
 
 const MainPage = ({ news }: { news: any[] }) => {
     const featuredTitlesList = news
@@ -29,6 +30,7 @@ const MainPage = ({ news }: { news: any[] }) => {
                         style={{ marginLeft: 15, textDecoration: 'none' }}
                     >
                         <img
+                            alt="comments"
                             src={isHot ? '/fire.png' : '/comments.png'}
                             width="15px"
                             style={{
@@ -70,6 +72,7 @@ const MainPage = ({ news }: { news: any[] }) => {
                         style={{ marginLeft: 15, textDecoration: 'none' }}
                     >
                         <img
+                            alt="comments"
                             src={isHot ? '/fire.png' : '/comments.png'}
                             width="15px"
                             style={{
@@ -87,6 +90,14 @@ const MainPage = ({ news }: { news: any[] }) => {
         });
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Cybersport news</title>
+                <meta
+                    name="viewport"
+                    content="initial-scale=1.0, width=device-width"
+                />
+                <meta name="description" content="cybersport.ru news киберспортивные новости"></meta>
+            </Head>
             <PortalsNavbar />
             <div style={{ marginBottom: 26 }}>{featuredTitlesList}</div>
             <div>{titlesList}</div>
