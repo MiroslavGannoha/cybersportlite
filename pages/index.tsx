@@ -21,6 +21,15 @@ const MainPage = ({ news }: { news: any[] }) => {
                     }}
                 >
                     <a href={portalsDomains.cybersport + link} target="_blank">
+                        <img
+                            src="/featured.png"
+                            width="20px"
+                            style={{
+                                marginRight: 12,
+                                verticalAlign: 'bottom',
+                            }}
+                            alt="featured title"
+                        />
                         {title}
                     </a>
 
@@ -58,7 +67,7 @@ const MainPage = ({ news }: { news: any[] }) => {
                             src={'/' + discipline + '.png'}
                             width="20px"
                             style={{
-                                marginRight: 6,
+                                marginRight: 12,
                                 verticalAlign: 'bottom',
                             }}
                             alt={discipline}
@@ -96,7 +105,11 @@ const MainPage = ({ news }: { news: any[] }) => {
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"
                 />
-                <meta name="description" content="cybersport.ru news киберспортивные новости"></meta>
+                <meta
+                    name="description"
+                    content="cybersport.ru news киберспортивные новости"
+                ></meta>
+                <link rel="icon" href="./favicon.png" />
             </Head>
             <PortalsNavbar />
             <div style={{ marginBottom: 26 }}>{featuredTitlesList}</div>
