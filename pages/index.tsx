@@ -18,7 +18,6 @@ const MainPage = ({ news }: { news: any[] }) => {
                     key={i + '__n__featured'}
                     style={{
                         fontWeight: 'bolder',
-                        fontSize: '1.15em',
                     }}
                 >
                     <a href={portalsDomains.cybersport + link} target="_blank">

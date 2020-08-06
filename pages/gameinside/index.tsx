@@ -1,6 +1,6 @@
 import * as React from 'react';
-import PortalsNavbar from '../components/PortalsNavbar';
-import styles from '../styles/index.module.css';
+import PortalsNavbar from '../../components/PortalsNavbar';
+import styles from '../../styles/index.module.css';
 
 const GameInsideNews = () => {
 
