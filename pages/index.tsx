@@ -210,7 +210,8 @@ export async function getStaticProps<GetStaticProps>() {
     console.timeEnd();
 
     return {
-        props: { news: news, revalidate: 60 }, // will be passed to the page component as props
+        props: { news: news }, // will be passed to the page component as props
+        revalidate: 60,
     };
 }
 
