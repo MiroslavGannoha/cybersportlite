@@ -100,7 +100,7 @@ const MainPage = ({ news }: { news: any[] }) => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Cybersport news</title>
+                <title>Cybersportnews.com - киберспортивные новости</title>
                 <meta
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"
@@ -118,7 +118,7 @@ const MainPage = ({ news }: { news: any[] }) => {
     );
 };
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
     console.time();
 
     const news = await fetch(portalsDomains.cybersport)
