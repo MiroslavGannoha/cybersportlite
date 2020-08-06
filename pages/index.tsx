@@ -4,7 +4,7 @@ import styles from '../styles/index.module.css';
 import PortalsNavbar from '../components/PortalsNavbar';
 import { portalsDomains } from '../settings';
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 
 const MainPage = ({ news }: { news: any[] }) => {
     const featuredTitlesList = news
@@ -119,7 +119,7 @@ const MainPage = ({ news }: { news: any[] }) => {
     );
 };
 
-export async function getServerSideProps<GetServerSideProps>(context) {
+export async function getStaticProps<GetStaticProps>() {
     console.time();
 
     const news = await fetch(portalsDomains.cybersport)
@@ -210,7 +210,7 @@ export async function getServerSideProps<GetServerSideProps>(context) {
     console.timeEnd();
 
     return {
-        props: { news: news }, // will be passed to the page component as props
+        props: { news: news, revalidate: 60 }, // will be passed to the page component as props
     };
 }
 
