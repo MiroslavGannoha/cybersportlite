@@ -1,6 +1,27 @@
 .container {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    margin: 10px 10%;
+    font-family: 'Trebuchet MS', Helvetica, sans-serif;
+    margin: 10px 3%;
+}
+
+@media (min-width: 640px) {
+    .container {
+        margin: 10px auto;
+        width: 600px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        margin: 10px auto;
+        width: 750px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        margin: 10px auto;
+        width: 1100px;
+    }
 }
 
 .title {
@@ -8,7 +29,7 @@
 }
 
 .title a {
-    color: 	#4361ee;
+    color: #4361ee;
 }
 
 .title a:visited {
@@ -18,9 +39,10 @@
 .list {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-.list > li{
+.list > li {
     display: inline-block;
     margin-right: 30px;
 }
