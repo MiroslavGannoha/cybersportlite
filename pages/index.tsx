@@ -100,7 +100,7 @@ const MainPage = ({ news }: { news: any[] }) => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Cybersportnews.com - киберспортивные новости</title>
+                <title>Cybersportnews.com - киберспортивные новости на максимальной скорости загрузки.</title>
                 <meta
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"

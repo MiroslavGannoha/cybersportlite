@@ -10,6 +10,7 @@ const PortalsNavbar = () => {
                 <Link href="/">
                     <a>
                         <img
+                            style={{borderRadius: 10}}
                             width="40px"
                             alt={portalsDomains.cybersport}
                             src={`${portalsDomains.cybersport}/favicon.ico`}
@@ -21,6 +22,7 @@ const PortalsNavbar = () => {
                 <Link href="/gameinside">
                     <a>
                         <img
+                            style={{borderRadius: 10}}
                             width="40px"
                             alt={portalsDomains.gameInside}
                             src={`${portalsDomains.gameInside}/favicon.ico`}
@@ -32,6 +34,7 @@ const PortalsNavbar = () => {
                 <Link href="/">
                     <a>
                         <img
+                            style={{borderRadius: 10}}
                             width="40px"
                             alt={portalsDomains.cyberSports}
                             src={`${portalsDomains.cyberSports}/favicon.ico`}
@@ -39,17 +42,18 @@ const PortalsNavbar = () => {
                     </a>
                 </Link>
             </li>
-            <li>
+{/*             <li>
                 <Link href="/">
                     <a>
                         <img
+                            style={{borderRadius: 10}}
                             width="40px"
                             alt={portalsDomains.championat}
                             src={`${portalsDomains.championat}/favicon.ico`}
                         />
                     </a>
                 </Link>
-            </li>
+            </li> */}
         </ul>
     );
 };
