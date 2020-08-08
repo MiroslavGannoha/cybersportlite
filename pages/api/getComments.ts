@@ -17,7 +17,7 @@ export default (req, res) => {
                     normalizeWhitespace: true,
                 });
 
-                const comments = $('.comments__message')
+                const comments: any[] = $('.comments__message')
                     .map((index, el) => {
                         const text = $(el)
                             .find('.comment__text p')
