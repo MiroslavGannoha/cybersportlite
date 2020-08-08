@@ -5,102 +5,216 @@ import PortalsNavbar from '../components/PortalsNavbar';
 import { portalsDomains } from '../settings';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
+import Spinner from '../components/Spinner';
 
 const MainPage = ({ news }: { news: any[] }) => {
+    const [comments, setComments] = React.useState([]);
+    const [selectedItemId, setSelectedItemId] = React.useState(null);
+    const [commentsLoading, setCommentsLoading] = React.useState(false);
+
+    function showComments(itemId) {
+        return () => {
+            setCommentsLoading(true);
+            setSelectedItemId(itemId);
+            setComments([]);
+
+            fetch(`/api/getComments?itemId=${itemId}`)
+                .then((resp) => resp.json())
+                .then((data) => {
+                    setCommentsLoading(false);
+                    setComments(data);
+                });
+        };
+    }
+
+    const commentsList = comments.map(
+        ({ text, author, avatar, likes, dislikes }, i) => {
+            return (
+                <div
+                    key={`comment-${author}-${i}`}
+                    style={{
+                        fontSize: '0.9em',
+                        color: '#676767',
+                        display: 'flex',
+                        marginBottom: 10,
+                    }}
+                >
+                    <div
+                        style={{
+                            minWidth: 40,
+                            marginRight: 4,
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        <div style={{ color: '#00aa00' }}>▲ {likes}</div>
+                        <div style={{ color: 'red' }}>▼ {dislikes}</div>
+                    </div>
+                    <img
+                        src={avatar}
+                        width="40px"
+                        height="40px"
+                        style={{ marginRight: 10 }}
+                    />
+                    <div>
+                        <div style={{ marginBottom: 5 }}>{author}</div>
+                        <div style={{ color: 'black' }}>{text}</div>
+                    </div>
+                </div>
+            );
+        }
+    );
+
     const featuredTitlesList = news
         .filter(({ isFeatured }) => isFeatured)
-        .map(({ title, link, commentsCount }, i) => {
+        .map(({ title, link, commentsCount, itemId }, i) => {
             const isHot = commentsCount > 24;
 
             return (
-                <div
-                    className={styles.title}
-                    key={i + '__n__featured'}
-                    style={{
-                        fontWeight: 'bolder',
-                    }}
-                >
-                    <a href={portalsDomains.cybersport + link} target="_blank">
-                        <img
-                            src="/featured.png"
-                            width="20px"
-                            style={{
-                                marginRight: 12,
-                                verticalAlign: 'bottom',
-                            }}
-                            alt="featured title"
-                        />
-                        {title}
-                    </a>
-
-                    <a
-                        href={portalsDomains.cybersport + link + '#comments'}
-                        target="_blank"
-                        style={{ marginLeft: 15, textDecoration: 'none' }}
+                <div key={i + '__n__featured'}>
+                    <div
+                        className={styles.title}
+                        style={{
+                            fontWeight: 'bolder',
+                        }}
                     >
+                        <a
+                            href={portalsDomains.cybersport + link}
+                            target="_blank"
+                        >
+                            <img
+                                src="/featured.png"
+                                width="20px"
+                                style={{
+                                    marginRight: 12,
+                                    verticalAlign: 'bottom',
+                                }}
+                                alt="главные новости"
+                            />
+                            {title}
+                        </a>
+
+                        <a
+                            href={
+                                portalsDomains.cybersport + link + '#comments'
+                            }
+                            target="_blank"
+                            style={{ marginLeft: 15, textDecoration: 'none' }}
+                        >
+                            <img
+                                alt="всего комментариев"
+                                src={isHot ? '/fire.png' : '/comments.png'}
+                                width="15px"
+                                style={{
+                                    marginRight: 4,
+                                    marginBottom: -2,
+                                    filter: isHot ? 'none' : 'opacity(0.6)',
+                                }}
+                            />
+                            <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
+                                {commentsCount}
+                            </span>
+                        </a>
                         <img
-                            alt="comments"
-                            src={isHot ? '/fire.png' : '/comments.png'}
-                            width="15px"
+                            alt="просмотр топ комментариев"
+                            src="preview.png"
+                            width="18px"
+                            onClick={showComments(itemId)}
                             style={{
-                                marginRight: 4,
-                                marginBottom: -2,
-                                filter: isHot ? 'none' : 'opacity(0.6)',
+                                marginLeft: 10,
+                                marginBottom: -4,
+                                cursor: 'pointer',
                             }}
                         />
-                        <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
-                            {commentsCount}
-                        </span>
-                    </a>
+                    </div>
+                    {itemId === selectedItemId ? (
+                        commentsLoading ? (
+                            <div style={{ marginLeft: 40 }}>
+                                <Spinner />
+                            </div>
+                        ) : (
+                            <div style={{ marginLeft: 20 }}>{commentsList}</div>
+                        )
+                    ) : null}
                 </div>
             );
         });
+
     const titlesList = news
         .filter(({ isFeatured }) => !isFeatured)
-        .map(({ title, link, commentsCount, discipline }, i) => {
+        .map(({ title, link, commentsCount, discipline, itemId }, i) => {
             const isHot = commentsCount > 24;
 
             return (
-                <div className={styles.title} key={i + '__n'}>
-                    <a href={portalsDomains.cybersport + link} target="_blank">
-                        <img
-                            src={'/' + discipline + '.png'}
-                            width="20px"
-                            style={{
-                                marginRight: 12,
-                                verticalAlign: 'bottom',
-                            }}
-                            alt={discipline}
-                        />
-                        {title}
-                    </a>
+                <div key={i + '__n'}>
+                    <div className={styles.title}>
+                        <a
+                            href={portalsDomains.cybersport + link}
+                            target="_blank"
+                        >
+                            <img
+                                src={'/' + discipline + '.png'}
+                                width="20px"
+                                style={{
+                                    marginRight: 12,
+                                    verticalAlign: 'bottom',
+                                }}
+                                alt={discipline}
+                            />
+                            {title}
+                        </a>
 
-                    <a
-                        href={portalsDomains.cybersport + link + '#comments'}
-                        target="_blank"
-                        style={{ marginLeft: 15, textDecoration: 'none' }}
-                    >
+                        <a
+                            href={
+                                portalsDomains.cybersport + link + '#comments'
+                            }
+                            target="_blank"
+                            style={{ marginLeft: 15, textDecoration: 'none' }}
+                        >
+                            <img
+                                alt="всего комментариев"
+                                src={isHot ? '/fire.png' : '/comments.png'}
+                                width="15px"
+                                style={{
+                                    marginRight: 4,
+                                    marginBottom: -2,
+                                    filter: isHot ? 'none' : 'opacity(0.6)',
+                                }}
+                            />
+                            <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
+                                {commentsCount}
+                            </span>
+                        </a>
                         <img
-                            alt="comments"
-                            src={isHot ? '/fire.png' : '/comments.png'}
-                            width="15px"
+                            alt="просмотр топ комментариев"
+                            src="preview.png"
+                            width="18px"
+                            onClick={showComments(itemId)}
                             style={{
-                                marginRight: 4,
-                                marginBottom: -2,
-                                filter: isHot ? 'none' : 'opacity(0.6)',
+                                marginLeft: 10,
+                                marginBottom: -4,
+                                cursor: 'pointer',
                             }}
                         />
-                        <span style={{ color: isHot ? '#ff5722' : 'gray' }}>
-                            {commentsCount}
-                        </span>
-                    </a>
+                    </div>
+                    {itemId === selectedItemId ? (
+                        commentsLoading ? (
+                            <div style={{ marginLeft: 40 }}>
+                                <Spinner />
+                            </div>
+                        ) : (
+                            <div style={{ marginLeft: 20 }}>{commentsList}</div>
+                        )
+                    ) : null}
                 </div>
             );
         });
     return (
         <div className={styles.container}>
             <Head>
-                <title>Cybersportnews.com - киберспортивные новости на максимальной скорости загрузки.</title>
+                <title>
+                    Cybersportnews.com - киберспортивные новости на максимальной
+                    скорости загрузки.
+                </title>
                 <meta
                     name="viewport"
                     content="initial-scale=1.0, width=device-width"
@@ -136,7 +250,7 @@ export async function getStaticProps<GetStaticProps>() {
                     .attr('class')
                     .split('--')[1];
 
-                const commentsId = $(element).find('.comment-counter').data()
+                const itemId = $(element).find('.comment-counter').data()
                     .objectId;
                 const title = $link.text();
 
@@ -144,7 +258,7 @@ export async function getStaticProps<GetStaticProps>() {
                     title: title,
                     link: $link.attr('href'),
                     commentsCount: 0,
-                    commentsId,
+                    itemId,
                     isFeatured: false,
                     discipline,
                 };
@@ -154,9 +268,8 @@ export async function getStaticProps<GetStaticProps>() {
                     const link = $(element)
                         .find('.responsive-card-feature ')
                         .attr('href');
-                    const commentsId = $(element)
-                        .find('.comment-counter')
-                        .data().objectId;
+                    const itemId = $(element).find('.comment-counter').data()
+                        .objectId;
 
                     const title = $(element)
                         .find('.card-feature__title')
@@ -168,7 +281,7 @@ export async function getStaticProps<GetStaticProps>() {
                         discipline: '',
                         link,
                         commentsCount: 0,
-                        commentsId,
+                        itemId,
                         isFeatured: true,
                     };
                 }
@@ -183,7 +296,7 @@ export async function getStaticProps<GetStaticProps>() {
         })
         .then((titles) => {
             const commentsQuery = titles
-                .map(({ commentsId }) => commentsId)
+                .map(({ itemId }) => itemId)
                 .join(',1|');
 
             return fetch(
@@ -194,8 +307,7 @@ export async function getStaticProps<GetStaticProps>() {
                     data.content.forEach(
                         ({ count, identity: { objectId } }) => {
                             const article = titles.find(
-                                ({ commentsId }) =>
-                                    Number(commentsId) === objectId
+                                ({ itemId }) => Number(itemId) === objectId
                             );
 
                             if (article) {
