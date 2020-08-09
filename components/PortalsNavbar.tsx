@@ -7,7 +7,7 @@ const PortalsNavbar = () => {
     return (
         <ul className={styles.list}>
             <li>
-                <Link href="/">
+                <Link href="/cybersport">
                     <a>
                         <img
                             style={{borderRadius: 10}}
