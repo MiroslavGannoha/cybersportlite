@@ -292,12 +292,12 @@ export async function getStaticProps<GetStaticProps>() {
                 .then((data) => {
                     data.content.forEach(
                         ({ count, identity: { objectId } }) => {
-                            const article = titles.find(
+                            const currentArticles = titles.filter(
                                 ({ itemId }) => Number(itemId) === objectId
                             );
 
-                            if (article) {
-                                article.commentsCount = count;
+                            if (currentArticles) {
+                                currentArticles.forEach((a) => a.commentsCount = count);
                             }
                         }
                     );
