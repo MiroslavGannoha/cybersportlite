@@ -1,3 +1,3 @@
 Cybersport news generator
 
-https://cybersportnews.com
+https://www.cybersportnews.com/cybersport
