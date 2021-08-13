@@ -24,7 +24,7 @@
   "homepage": "https://github.com/MiroslavGannoha/cybersportlite#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "next": "^9.5.1",
+    "next": "^11.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
